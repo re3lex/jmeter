@@ -24,6 +24,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Insets;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -71,6 +72,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.MenuElement;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.Scrollable;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -432,7 +435,40 @@ public class MainFrame extends JFrame implements TestStateListener, Remoteable, 
     }
 
     public void setMainPanel(JComponent comp) {
-        mainPanel.setViewportView(comp);
+        ViewportTrackingPanel wrapper = new ViewportTrackingPanel();
+        wrapper.add(comp, BorderLayout.CENTER);
+        mainPanel.setViewportView(wrapper);
+    }
+
+    private static final class ViewportTrackingPanel extends JPanel implements Scrollable {
+        ViewportTrackingPanel() {
+            super(new BorderLayout());
+        }
+
+        @Override
+        public Dimension getPreferredScrollableViewportSize() {
+            return getPreferredSize();
+        }
+
+        @Override
+        public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+            return 10;
+        }
+
+        @Override
+        public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
+            return 100;
+        }
+
+        @Override
+        public boolean getScrollableTracksViewportWidth() {
+            return true;
+        }
+
+        @Override
+        public boolean getScrollableTracksViewportHeight() {
+            return false;
+        }
     }
 
     public JTree getTree() {
@@ -632,7 +668,8 @@ public class MainFrame extends JFrame implements TestStateListener, Remoteable, 
      * @return the main scroll pane
      */
     private static JScrollPane createMainPanel() {
-        return new JScrollPane();
+        return new JScrollPane(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     }
 
     /**

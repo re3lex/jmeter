@@ -43,7 +43,9 @@ public final class ComponentUtil {
         int validPercentOfScreen = Math.min(Math.abs(percentOfScreen), 100);
         double percent = validPercentOfScreen / 100.d;
         Rectangle bounds = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().getBounds();
-        component.setSize((int) (bounds.getWidth() * percent), (int) (bounds.getHeight() * percent));
+        int width = Math.min((int) (bounds.getWidth() * percent), 1400);
+        int height = Math.min((int) (bounds.getHeight() * percent), 900);
+        component.setSize(width, height);
         centerComponentInWindow(component);
     }
 
